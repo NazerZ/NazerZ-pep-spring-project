@@ -77,21 +77,28 @@ public class SocialMediaController {
      * @throws Exception
      */
     @GetMapping("/messages/{message_id}")
-    public Message getMessageById(@PathVariable Integer id){
-        Message message = messageService.getMessageById(id);
+    public Message getMessageById(@PathVariable Integer message_id){
+        Message message = messageService.getMessageById(message_id);
         return message;
     }
+
     @DeleteMapping("/messages/{message_id}")
-    public ResponseEntity<Integer> deleteMessageById(@PathVariable Integer id){
-        int deletedMessage = messageService.deleteMessageById(id);
+    public ResponseEntity<Integer> deleteMessageById(@PathVariable Integer message_id){
+        int deletedMessage = messageService.deleteMessageById(message_id);
         if (deletedMessage == 1){
             return new ResponseEntity<Integer>(deletedMessage,HttpStatus.OK);
         }
-        return new ResponseEntity<Integer>(HttpStatus.OK);
+        else{
+            return new ResponseEntity<Integer>(0,HttpStatus.OK); 
+        }
     }
 
     @PatchMapping("/messages/{message_id}")
-    public ResponseEntity<Integer> patchMessageById(@RequestBody String text, @PathVariable int id ){
-        return new ResponseEntity<Integer>(messageService.updateMessage(text,id),HttpStatus.OK) ;
+    public ResponseEntity<Integer> patchMessageById(@RequestBody String text, @PathVariable int message_id ){
+        return new ResponseEntity<Integer>(messageService.updateMessage(text,message_id),HttpStatus.OK) ;
+    }
+    @GetMapping("/accounts/{account_id}/messages")
+    public List<Message> getAllMessagesByUser(@PathVariable Integer account_id){
+        return messageService.getAllMessagesByUserId(account_id);
     }
 }

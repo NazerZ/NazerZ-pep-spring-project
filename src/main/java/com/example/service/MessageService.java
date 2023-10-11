@@ -3,6 +3,8 @@ package com.example.service;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,11 +16,9 @@ import com.example.repository.MessageRepository;
 @Service
 public class MessageService {
 
-    @Autowired
-    MessageRepository messageRepository;
+    private final MessageRepository messageRepository;
 
     @Autowired
-    AccountRepository accountRepository;
     public MessageService(MessageRepository messageRepository){
         this.messageRepository =messageRepository;
     }
@@ -42,26 +42,32 @@ public class MessageService {
         return messageRepository.save(message);
     }
     public Message getMessageById(Integer id) {
-        return messageRepository.findById(id).get();
+        Optional<Message> message = messageRepository.findById(id);
+        if (message.isPresent()){
+            return message.get();
+        }
+        return null;
     }
     public int deleteMessageById(int id) {
         Optional<Message> m = messageRepository.findById(id);
         if (m.isPresent()){
-            Message message = m.get();
-            messageRepository.delete(message);
+            messageRepository.deleteById(id);
             return 1;
         }
         return 0;
     }
     public int updateMessage(String text, int id) {
-        /*if(text.length() <1 ||text.length()>255){
+        if(text.length() <1 ||text.length()>255){
             throw new InvalidInputException("Invalid message");
         }
-        int rows = messageRepository.updateMessageText(id, text);
-        if(rows == 0){
-            throw new InvalidInputException("not valid input");
+        if (messageRepository.findById(id)== null){
+            throw new InvalidInputException("id not found");
         }
-        return rows;*/
-        return (Integer) null;
+        //int rows = messageRepository.updateMessageText(id, text);
+        return 1;
+
+    }
+    public List<Message> getAllMessagesByUserId(Integer account_id) {
+        return messageRepository.getMessagesByAccountId(account_id);
     }
 }

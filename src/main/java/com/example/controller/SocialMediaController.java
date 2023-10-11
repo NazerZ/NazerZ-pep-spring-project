@@ -35,15 +35,11 @@ import com.example.service.MessageService;
 @RestController
 public class SocialMediaController {
 
-    /**
-     * @param account
-     * @return
-     */
     @Autowired
     private  AccountService accountService;
     
     @Autowired
-    MessageService messageService;
+    private MessageService messageService;
 
     /**
      * @param account
@@ -71,11 +67,6 @@ public class SocialMediaController {
         return messageService.getAllMessages();
     }
 
-    /**
-     * @param id
-     * @return
-     * @throws Exception
-     */
     @GetMapping("/messages/{message_id}")
     public Message getMessageById(@PathVariable Integer message_id){
         Message message = messageService.getMessageById(message_id);

@@ -16,16 +16,8 @@ import com.example.entity.Message;
 @Repository
 public interface MessageRepository extends JpaRepository<Message,Integer>{
 
-    //@Query("select m from Message m")
     List<Message> findAll();
-
-   // @Query("from message where id = :id")
-    //Message findByMessageId(@Param("id") int id);
-    /* 
-    @Modifying
-    @Query("UPDATE Message m SET m.messageText = :text WHERE m.messageId = :id")
-    int updateMessageText(@Param("id") int id, @Param("text") String newText);
-    */
+    
     @Query("SELECT m FROM Message m WHERE m.posted_by = :account_id")
     List<Message> getMessagesByAccountId(@Param("account_id") Integer account_id);
 }

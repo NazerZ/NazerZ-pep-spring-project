@@ -60,12 +60,14 @@ public class MessageService {
         if(text.getMessage_text().length() <1 ||text.getMessage_text().length()>255){
             throw new InvalidInputException("Invalid message");
         }
-        if (!messageRepository.findById(id).isPresent()){
+        Optional<Message> m = messageRepository.findById(id);
+        if (!m.isPresent()){
             throw new InvalidInputException("id not found");
         }
-        //int rows = messageRepository.updateMessageText(id, text);
+        Message mm = m.get();
+        mm.setMessage_text(text.getMessage_text());
+        messageRepository.save(mm);
         return 1;
-
     }
     public List<Message> getAllMessagesByUserId(Integer account_id) {
         return messageRepository.getMessagesByAccountId(account_id);

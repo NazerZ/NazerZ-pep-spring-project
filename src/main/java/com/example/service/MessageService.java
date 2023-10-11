@@ -56,11 +56,11 @@ public class MessageService {
         }
         return 0;
     }
-    public int updateMessage(String text, int id) {
-        if(text.length() <1 ||text.length()>255){
+    public int updateMessage(Message text, int id) {
+        if(text.getMessage_text().length() <1 ||text.getMessage_text().length()>255){
             throw new InvalidInputException("Invalid message");
         }
-        if (messageRepository.findById(id)== null){
+        if (!messageRepository.findById(id).isPresent()){
             throw new InvalidInputException("id not found");
         }
         //int rows = messageRepository.updateMessageText(id, text);

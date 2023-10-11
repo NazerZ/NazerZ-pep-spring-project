@@ -94,9 +94,10 @@ public class SocialMediaController {
     }
 
     @PatchMapping("/messages/{message_id}")
-    public ResponseEntity<Integer> patchMessageById(@RequestBody String text, @PathVariable int message_id ){
+    public ResponseEntity<Integer> patchMessageById(@RequestBody Message text, @PathVariable int message_id ){
         return new ResponseEntity<Integer>(messageService.updateMessage(text,message_id),HttpStatus.OK) ;
     }
+
     @GetMapping("/accounts/{account_id}/messages")
     public List<Message> getAllMessagesByUser(@PathVariable Integer account_id){
         return messageService.getAllMessagesByUserId(account_id);

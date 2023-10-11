@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.entity.Account;
 import com.example.exception.DuplicateUsernameException;
-import com.example.exception.InvalidAccountException;
+import com.example.exception.InvalidInputException;
 import com.example.exception.UnauthorizedLoginException;
 import com.example.repository.AccountRepository;
 
@@ -38,9 +38,9 @@ public class AccountService {
     }
 
 
-    public Account register(Account account)throws InvalidAccountException,DuplicateUsernameException{
+    public Account register(Account account)throws InvalidInputException,DuplicateUsernameException{
         if(account.getUsername().length()<1  || account.getPassword().length() < 4){
-            throw new InvalidAccountException("Invalid username or password");
+            throw new InvalidInputException("Invalid username or password");
         }
 
         Account a = accountRepository.findByUsername(account.getUsername());

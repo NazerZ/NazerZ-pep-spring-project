@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.entity.Account;
 import com.example.entity.Message;
 import com.example.exception.DuplicateUsernameException;
-import com.example.exception.InvalidAccountException;
+import com.example.exception.InvalidInputException;
 import com.example.repository.AccountRepository;
 import com.example.service.AccountService;
 import com.example.service.MessageService;
@@ -50,7 +50,7 @@ public class SocialMediaController {
      * @throws AccountException
      */
     @PostMapping("/register")
-    public ResponseEntity<Account> postAccountRegister(@RequestBody Account account) throws DuplicateUsernameException,InvalidAccountException{
+    public ResponseEntity<Account> postAccountRegister(@RequestBody Account account) throws DuplicateUsernameException,InvalidInputException{
         return new ResponseEntity<Account>(accountService.register(account),HttpStatus.OK);
         }
     @PostMapping("/login")
@@ -58,27 +58,40 @@ public class SocialMediaController {
         return new ResponseEntity<Account>(accountService.login(account),HttpStatus.OK);
     }
     
-    @PostMapping("/messages/")
-    public @ResponseBody Message postMessage(@RequestBody Message message){
-        return messageService.addMessage(message);
+    @PostMapping("/messages")
+    public ResponseEntity<Message> postMessage(@RequestBody Message message){
+        if(accountService.getAccountById(message.getPosted_by()) == null){
+            return new ResponseEntity<Message>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<Message>(messageService.createMessage(message),HttpStatus.OK);
     }
 
-    @GetMapping(value ="/messages/")
+    @GetMapping(value ="/messages")
     public List<Message> getAllMessages(){
         return messageService.getAllMessages();
     }
 
+    /**
+     * @param id
+     * @return
+     * @throws Exception
+     */
     @GetMapping("/messages/{message_id}")
-    public Message getMessageById(@PathVariable int id){
-        return null;
+    public Message getMessageById(@PathVariable Integer id){
+        Message message = messageService.getMessageById(id);
+        return message;
     }
     @DeleteMapping("/messages/{message_id}")
-    public Message deleteMessageById(@PathVariable int id){
-        return null;
+    public ResponseEntity<Integer> deleteMessageById(@PathVariable Integer id){
+        int deletedMessage = messageService.deleteMessageById(id);
+        if (deletedMessage == 1){
+            return new ResponseEntity<Integer>(deletedMessage,HttpStatus.OK);
+        }
+        return new ResponseEntity<Integer>(HttpStatus.OK);
     }
 
     @PatchMapping("/messages/{message_id}")
-    public Message patchMessageById(@RequestBody String text, @PathVariable int id ){
-        return null;
+    public ResponseEntity<Integer> patchMessageById(@RequestBody String text, @PathVariable int id ){
+        return new ResponseEntity<Integer>(messageService.updateMessage(text,id),HttpStatus.OK) ;
     }
 }

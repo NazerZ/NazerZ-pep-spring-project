@@ -1,5 +1,6 @@
 package com.example.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,13 +14,9 @@ import com.example.entity.Account;
 public interface AccountRepository extends JpaRepository<Account,Integer> {
     //account login
     // account register
-    
-    @Query("from account where username = :username and password = :password")
-    public Account getLogin(@Param("username") String username, @Param ("password")String password);
 
-    @Query("insert into account(username,password) values(:username, :password)")
-    public Account addUser(@Param("username")String username, @Param("password") String password);
+    //@Query("SELECT a FROM account a WHERE a.username = :username")
+    public Account findByUsername(@Param("username")String username);
     
-    @Query("from account where username =:username")
-    public <T> Optional<T> getUsername(@Param("username") String username);
+    public Account findByUsernameAndPassword(String username, String password);
 }
